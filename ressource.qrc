@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/img">
-        <file>fdaffiche.jpg</file>
-        <file>f01499ea873e4320b121979478d2d9d4.png</file>
+        <file>IMG_0106.jpg</file>
+        <file>IMG_0125.jpg</file>
+        <file>téléchargement.png</file>
     </qresource>
 </RCC>
