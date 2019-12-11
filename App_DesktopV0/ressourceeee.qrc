@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>53317.png</file>
+        <file>126794.png</file>
+        <file>ajout.png</file>
+        <file>annuler.png</file>
+        <file>bf0d64e726ecd074a2e4a39681696ee9.jpg</file>
+        <file>bouton-quitter-png-3.png</file>
+        <file>Business-Todo-List-icon.png</file>
+        <file>cbn.jpg</file>
+        <file>fdaffiche - Copie.jpg</file>
+        <file>fdaffiche.jpg</file>
+        <file>grocer.png</file>
+        <file>panier3.jpg</file>
+        <file>panier4.png</file>
+        <file>poubelle.png</file>
+        <file>show.png</file>
+        <file>show-password-icon-19.jpg</file>
+        <file>sortascend256_25201.png</file>
+        <file>téléchargement.png</file>
+        <file>unnamed.png</file>
+        <file>facebook_logos_PNG19757.png</file>
+        <file>instagram.png</file>
+        <file>Twitter_Bird.svg.png</file>
+        <file>YouTube_logo_(2013-2015).png</file>
+        <file>1497553309-101_84843.png</file>
+        <file>1497553283-108_84845.png</file>
+    </qresource>
+</RCC>
