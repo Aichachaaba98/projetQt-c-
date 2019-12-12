@@ -1,4 +1,4 @@
-QT       += core gui  sql network
+QT       += core gui  sql network multimedia
 #QT       += core gui network
 
 
@@ -22,60 +22,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    affichagepr.cpp \
-    afficher.cpp \
-    ajout.cpp \
-    ajoutpr.cpp \
-    alerteqt.cpp \
     connexion.cpp \
-    dateex.cpp \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
-    modifier.cpp \
-    modifierprod.cpp \
     notification.cpp \
     produitray.cpp \
     rayon.cpp \
-    smtp.cpp \
-    smtpaff.cpp \
-    suppprod.cpp \
-    suppression.cpp
+    smtp.cpp
 
 HEADERS += \
-    affichagepr.h \
-    afficher.h \
-    ajout.h \
-    ajoutpr.h \
-    alerteqt.h \
     connexion.h \
-    dateex.h \
     login.h \
     mainwindow.h \
-    modifier.h \
-    modifierprod.h \
     notification.h \
     produitray.h \
     rayon.h \
-    smtp.h \
-    smtpaff.h \
-    suppprod.h \
-    suppression.h
+    smtp.h
 
 FORMS += \
-    affichagepr.ui \
-    afficher.ui \
-    ajout.ui \
-    ajoutpr.ui \
-    alerteqt.ui \
-    dateex.ui \
     login.ui \
-    mainwindow.ui \
-    modifier.ui \
-    modifierprod.ui \
-    smtpaff.ui \
-    suppprod.ui \
-    suppression.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

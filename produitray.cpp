@@ -179,12 +179,22 @@ QSqlQueryModel * produitray::modeltype()
     return model;
 }
 
-QSqlQueryModel * produitray::alertedate(bool *test)
+QSqlQueryModel * produitray::modelrefpr()
+{
+    QSqlQueryModel * model = new QSqlQueryModel;
+    QSqlQuery * query= new QSqlQuery();
+     query->prepare("select refproduit from produit");
+    query->exec();
+    model->setQuery(*query);
+    return model;
+}
+
+QSqlQueryModel * produitray::alertedate()
 {QSqlQueryModel * model = new QSqlQueryModel;
  QSqlQuery query;
  query.prepare("select * from produitray where date_exp<= sysdate");
  query.exec();
- *test=query.first();
+ //*test=query.first();
  model->setQuery(query);
 
  return model;

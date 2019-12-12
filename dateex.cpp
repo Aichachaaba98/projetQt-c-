@@ -6,8 +6,9 @@ dateex::dateex(QWidget *parent) :
     ui(new Ui::dateex)
 {
     ui->setupUi(this);
-    bool *test;
-    ui->tableView->setModel(pr.alertedate(test));
+   // bool *test;
+   /* *test=true;*/
+    ui->tableView->setModel(pr.alertedate());
 }
 
 dateex::~dateex()

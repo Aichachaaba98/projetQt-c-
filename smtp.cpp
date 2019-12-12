@@ -1,6 +1,7 @@
 #include "smtp.h"
 #include "smtp.h"
-
+#include <QSqlQuery>
+#include <QSqlQueryModel>
 Smtp::Smtp( const QString &user, const QString &pass, const QString &host, quint16 port, int timeout )
 {
     socket = new QSslSocket(this);
@@ -40,7 +41,6 @@ void Smtp::sendMail(const QString &from, const QString &to, const QString &subje
      }
 
     t = new QTextStream( socket );
-
 
 
 }

@@ -22,8 +22,8 @@ Rayon::Rayon()
  {
      QSqlQuery query;
          QString res=QString::number(ref);
-      query.prepare("INSERT INTO Rayon(refrayon,type,refemploye)Values(:refrayon,:type,:refemploye)");
-     query.bindValue(":refrayon",res);
+      query.prepare("INSERT INTO Rayon(refrayon,type,refemploye)Values(AICHA.AICHA_REFRAYON.nextval,:type,:refemploye)");
+    // query.bindValue(":refrayon",res);
      query.bindValue(":type",type);
      query.bindValue(":refemploye",refemploye);
      return  query.exec();

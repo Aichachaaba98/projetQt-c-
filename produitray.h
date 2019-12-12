@@ -53,8 +53,9 @@ public:
     bool modifier(int ref,QString nom, QString type, int refrayon, int qt, QDate date, int solde);
     bool rech(int ref);
      QSqlQueryModel * modeltype();
-     QSqlQueryModel * alertedate(bool *test);
+     QSqlQueryModel * alertedate();
     QSqlQueryModel * alerteqt();
+    QSqlQueryModel * modelrefpr();
 private:
     int ref;
     int refray;
