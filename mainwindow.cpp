@@ -1,397 +1,278 @@
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
-#include  "dateex.h"
-
-#include  "notification.h"
-#include  "alerteqt.h"
-#include  "produitray.h"
+#include"abonne.h"
+#include <QMessageBox>
+#include "place.h"
+#include "statistique.h"
 #include <QSqlQueryModel>
+#include <QTextDocument>
+#include <QTextStream>
+#include <QPrintDialog>
+#include <QPrinter>
+#include"QDate"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{   notification n;
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
     ui->setupUi(this);
-   // bool *test;
-   // *test=false;
-    //QSqlQueryModel * q;
-
-   /*q->pr.alertedate();
-    if (*test==true)*/
-    n.notification_dateexp();
-    music->setMedia(QUrl("C:/Users/HP ENVY/Documents/50 Cent - In Da Club (Int'l Version).mp3"));
-    music->play();
-     ui->comboBox_9->setModel(pr.modeltype());
-     ui->comboBox_3->setModel(pr.modelrefpr());
-     connect(ui->sendBtn, SIGNAL(clicked()),this, SLOT(sendMail()));
-     connect(ui->exitBtn, SIGNAL(clicked()),this, SLOT(close()));
-     ui->tableView_2->setModel(pr.alerteqt());
-     ui->tableView_3->setModel(pr.alertedate());
+    ui->tabAbonne->setModel(tmpabonne.afficher());
+    ui->tab_place->setModel(tmpplace.afficherp());
 }
-
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-
-void MainWindow::initialiser()
+void MainWindow::on_pb_ajouter_clicked()
 {
-    ui->lineEdit->clear();
-    ui->lineEdit_2->clear();
 
-    ui->lineEdit_23->clear();
-    ui->refedit_5->clear();
-    ui->refrayedit->clear();
-    ui->lineEdit_7->clear();
-    ui->lineEdit_12->clear();
+    QString email= ui->lineEdit_email->text();
+    int id = ui->lineEdit_id->text().toInt();
+    int hentre = ui->lineEdit_heure_entree->text().toInt();
+    int hsortie  = ui->lineEdit_heure_sortie->text().toInt();
+    abonne e(email,id,hentre,hsortie);
+    bool test=false;
+    int i;
+    for(i=0;i<email.size();i++)
+    {if((email[i]=="@")&&(hsortie>hentre))
+    test=true;}
+    if(test)
+    {e.ajouter();}
+    if(test)
+    {ui->tabAbonne->setModel(tmpabonne.afficher());
+        QMessageBox::information(nullptr, QObject::tr("Ajouter un abonne"),
+                                 QObject::tr("abonne ajouté.\n"
+                                             "Click Cancel to exit."), QMessageBox::Cancel);
+
+    }
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Ajouter un abonne"),
+                              QObject::tr("Erreur !.\n"
+                                          "Click Cancel to exit."), QMessageBox::Cancel);
 }
 
-
-
-
-void MainWindow::on_horizontalSlider_sliderMoved(int position)
+void MainWindow::on_pb_supprimer_clicked()
 {
-   int volume=position;
-    music->setVolume(volume);
+    QString mail=ui->lineEdit_id_2->text();
+    bool test=tmpabonne.supprimer(mail);
+    if(test)
+    {ui->tabAbonne->setModel(tmpabonne.afficher());
+        QMessageBox::information(nullptr, QObject::tr("supprimer un abonne"),
+                                 QObject::tr("abonne supprimer.\n"
+                                             "Click Cancel to exit."), QMessageBox::Cancel);}
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Supprimer un abonne"),
+                              QObject::tr("Erreur !.\n"
+                                          "Click Cancel to exit."), QMessageBox::Cancel);
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-     music->play();
+    QString email=ui->lineEdit_email->text();
+    int id=ui->lineEdit_id->text().toInt();
+    int hentre=ui->lineEdit_heure_entree->text().toInt();
+    int hsortie=ui->lineEdit_heure_sortie->text().toInt();
+    abonne a;
+    bool atout=a.modifier(email,id,hentre,hsortie);
+    if(atout)
+    {ui->tabAbonne->setModel(tmpabonne.afficher());
+        QMessageBox::information(nullptr, QObject::tr("modifier un abonne"),
+                                 QObject::tr("abonne modifié.\n"
+                                             "Click Cancel to exit."), QMessageBox::Cancel);}
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Modifier un abonne"),
+                              QObject::tr("Erreur !.\n"
+                                          "Click Cancel to exit."), QMessageBox::Cancel);
+
+
+}
+
+void MainWindow::on_pushButton_ajouter_clicked()
+{
+    int id = ui->lineEdit_id2->text().toInt();
+    int nb_place = ui->lineEdit_pnbplace->text().toInt();
+    int nb_voiture  = ui->lineEdit_nbvoiture->text().toInt();
+    float tarif = ui->lineEdit_tarif->text().toFloat();
+    place p(id,nb_place,nb_voiture,tarif);
+    bool test=false;
+    if(id>0)
+    {test=true;}
+    if (test)
+    {p.ajouterp();}
+    if(test)
+    {
+        ui->tab_place->setModel(tmpplace.afficherp());
+
+        QMessageBox::information(nullptr, QObject::tr("Ajouter une place"),
+                                 QObject::tr("place ajouté.\n"
+                                             "Click Cancel to exit."), QMessageBox::Cancel);
+
+    }
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Ajouter une place"),
+                              QObject::tr("Erreur !.\n"
+                                          "Click Cancel to exit."), QMessageBox::Cancel);
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    music->pause();
+    int id=ui->lineEdit_idd->text().toInt();
+    bool test=tmpplace.supprimerp(id);
+    if(test)
+    {ui->tab_place->setModel(tmpplace.afficherp());
+        QMessageBox::information(nullptr, QObject::tr("supprimer une place"),
+                                 QObject::tr("place supprimer.\n"
+                                             "Click Cancel to exit."), QMessageBox::Cancel);}
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Supprimer une place"),
+                              QObject::tr("Erreur !.\n"
+                                          "Click Cancel to exit."), QMessageBox::Cancel);
 }
 
-void MainWindow::on_pushButton_23_clicked()
+void MainWindow::on_pushButton_modifier_clicked()
 {
-    int refrayon = ui->lineEdit_7->text().toInt();
-    ui->taberayon->setModel(tmprayon.chercher(refrayon));
-
-    // ui->tableView->reset();
-
-
-    //ui->tableView->setModel(tmprayon.chercher3(collect));
-        QMessageBox::information(nullptr, QObject::tr("recherche un rayon"),
-                          QObject::tr("rayon recherche.\n"
-                                      "Click Cancel to exit."), QMessageBox::Cancel);
-       // ui->tableView->setModel(tmprayon.afficher())
-
+    int id=ui->lineEdit_id2->text().toInt();
+    int nb_place=ui->lineEdit_pnbplace->text().toInt();
+    int nb_voiture=ui->lineEdit_nbvoiture->text().toInt();
+    float tarif=ui->lineEdit_tarif->text().toFloat();
+    place p;
+    bool atout=p.modifierp(id,nb_place,nb_voiture,tarif);
+    if(atout)
+    {ui->tab_place->setModel(tmpplace.afficherp());
+        QMessageBox::information(nullptr, QObject::tr("modifier une place"),
+                                 QObject::tr("place modifié.\n"
+                                             "Click Cancel to exit."), QMessageBox::Cancel);}
+    else
+        QMessageBox::critical(nullptr, QObject::tr("Modifier une place"),
+                              QObject::tr("Erreur !.\n"
+                                          "Click Cancel to exit."), QMessageBox::Cancel);
 }
 
-void MainWindow::on_radioButton_23_clicked()
-{
-    ui->taberayon->setModel(tmprayon.afficher());
-}
-
-void MainWindow::on_pushButton_24_clicked()
-{
-    int refemploye = ui->lineEdit_12->text().toInt();
-    ui->taberayon->setModel(tmprayon.chercher2(refemploye));
-}
-
-void MainWindow::on_radioButton_9_clicked()
-{
-    ui->taberayon->setModel(tmprayon.triertype());
-}
-
-void MainWindow::on_radioButton_11_clicked()
-{
-    ui->taberayon->setModel(tmprayon.trierrefrayon());
-}
-
-void MainWindow::on_radioButton_10_clicked()
-{
-    ui->taberayon->setModel(tmprayon.trierrefemploye());
-}
-
-void MainWindow::on_comboBox_2_activated(const QString &arg1)
-{
-    collect=arg1;
-}
-
-void MainWindow::on_pushButton_8_clicked()
-{
-     ui->taberayon->setModel(tmprayon.chercher3(collect));
-}
-
-void MainWindow::on_modifier_rayon_clicked()
-{
-    int  refrayon = ui->lineEdit_11->text().toInt();
-    QString type = ui->lineEdit_13->text();
-     int refemploye  = ui->lineEdit_14->text().toInt();
-
-
-    if(tmprayon.rech(refrayon)){
-        bool test = tmprayon.modifier(refrayon,type,refemploye);
-        if(test){
-            //ui->tabpersonnel->setModel(tmppersonnel.afficher());
-            QMessageBox::information(nullptr,QObject::tr("Personnel modifier"),QObject::tr("click cancel to exit!"),QMessageBox::Cancel);
-            ui->taberayon->setModel(tmprayon.afficher());
-        }
-    }
-}
-
-void MainWindow::on_supprimer_rayon_clicked()
-{
-    int refrayon = ui->supprimer_rayon->text().toInt();
-    bool test= tmprayon.supprimer(refrayon);
-    if (test)
-    {
-        QMessageBox::information(nullptr, QObject::tr("supprimer un rayon"),
-                          QObject::tr("rayon supprimer.\n"
-                                      "Click Cancel to exit."), QMessageBox::Cancel);
-        ui->taberayon->setModel(tmprayon.afficher());
-    }
-}
-
-void MainWindow::on_ok_clicked()
-{
-
-
-    int ref;
-    int refemploye;
-
-    QString type;
-
-
-   ref = ui->refedit->text().toInt();
-     type = ui->typeedit->text();
-     refemploye = ui->lineEdit_8->text().toInt();
 
 
 
- // Rayon e(ref,type,refemploye);
-     e.set_ref(ref);
-     e.set_refemploye(refemploye);
-     e.set_type(type);
-  //bool test=e.ajouter();
-  if(e.ajouter())
-{
-QMessageBox::information(nullptr, QObject::tr("Ajouter un rayon"),
-                  QObject::tr("rayon ajouté.\n"
-                              "Click Cancel to exit."), QMessageBox::Cancel);
-
-}
-  else{
-      QMessageBox::critical(nullptr, QObject::tr("Ajouter un rayon"),
-                  QObject::tr("Erreur !.\n"
-                              "Click Cancel to exit."), QMessageBox::Cancel);
-
-}
-}
-bool MainWindow::verif_nom(QString nom){
-    bool test=true;
-    int i;
-        for(i=0;i<nom.length();i++){
-            if(!(((nom[i]>='A')&&(nom[i]<='Z'))||((nom[i]>='a')&&(nom[i]<='z')))){
-                test=false;
-                return  test;
 
 
-    }
-  }
-    return  test;
-}
+
+
+
 void MainWindow::on_pushButton_3_clicked()
 {
+    int id=ui->chercher->text().toInt();
 
-    int ref;
-    int refray;
-    QString nom;
+    ui->tab_place->setModel(tmpplace.chercher(id));
 
-
-
-       nom = ui->refedit_5->text();
-       refray= ui->refrayedit->text().toInt();
-
-
-if(verif_nom(nom)==true){
-       //pr.set_ref(ref);
-         pr.set_nom(nom);
-         pr.set_refray(refray);
-
-      if(pr.ajouter())
-    {
-    QMessageBox::information(nullptr, QObject::tr("Ajout"),
-                      QObject::tr("rayon ajouté.\n"
-                                  "Click Ok to exit."), QMessageBox::Ok);
-    ui->tableView_2->setModel(pr.alerteqt());
-    ui->tableView->setModel(pr.afficher());
-    ui->tableView_3->setModel(pr.alertedate());
-
-    }
-}
-      else{
-          QMessageBox::critical(nullptr, QObject::tr("Ajout"),
-                      QObject::tr("Erreur !\n"
-                                  "Click Cancel to exit."), QMessageBox::Cancel);
-    }
-initialiser();
 }
 
-void MainWindow::on_comboBox_activated(const QString &arg1)
+void MainWindow::on_stat_clicked()
 {
-    pr.set_type(arg1);
-}
-
-void MainWindow::on_dateEdit_userDateChanged(const QDate &date)
-{
-     pr.set_date(date);
-}
-
-void MainWindow::on_spinBox_valueChanged(const QString &arg1)
-{
-    pr.set_qtray(arg1.toInt());
+    statistique *a=new statistique();
+    a->show();
 }
 
 
 
-void MainWindow::on_spinBox_2_valueChanged(const QString &arg1)
-{
-    pr.set_solde(arg1.toInt());
-}
-
-void MainWindow::on_radioButton_5_clicked()
-{
-    ui->tableView->setModel(pr.afficher());
-}
-
-void MainWindow::on_radioButton_6_clicked()
-{
-    ui->tableView->setModel(pr.triernom());
-}
-
-void MainWindow::on_radioButton_7_clicked()
-{
-     ui->tableView->setModel(pr.trierqt());
-}
-
-void MainWindow::on_radioButton_8_clicked()
-{
-    ui->tableView->setModel(pr.trierdate());
-}
 
 void MainWindow::on_pushButton_4_clicked()
 {
-    int refrayon= ui->lineEdit->text().toInt();
-        ui->tableView->setModel(pr.chercher(refrayon));
-        initialiser();
+    int id=ui->lineEdit_chercher->text().toInt();
+
+    ui->tabAbonne->setModel(tmpabonne.cherchera(id));
 }
+
 
 void MainWindow::on_pushButton_5_clicked()
 {
-    QString nom= ui->lineEdit_2->text();
-        ui->tableView->setModel(pr.chercher1(nom));
-        initialiser();
+   ui->tab_place->setModel(tmpplace.trie(0));
 }
 
 void MainWindow::on_pushButton_6_clicked()
 {
-    ui->tableView->setModel(pr.chercher2(pr.get_type()));
+     ui->tab_place->setModel(tmpplace.trie(1));
 }
 
-void MainWindow::on_comboBox_8_activated(const QString &arg1)
+void MainWindow::on_pushButton_7_clicked()
 {
-    pr.set_type(arg1);
+    ui->tabAbonne->setModel(tmpabonne.triea(0));
 }
 
-void MainWindow::on_pushButton_22_clicked()
+void MainWindow::on_pushButton_8_clicked()
 {
-    int  ref = ui->refedit_9->text().toInt();
-    QString nom = ui->refedit_10->text();
-     int refrayon  = ui->refrayedit_3->text().toInt();
-
-
-    if(pr.rech(ref)&& verif_nom(nom)){
-        bool test = pr.modifier(ref,nom,type,refrayon,qt,date1,solde);
-        if(test){
-
-            QMessageBox::information(nullptr,QObject::tr("produit modifié"),QObject::tr("click cancel to exit!"),QMessageBox::Cancel);
-            ui->tableView->setModel(pr.afficher());
-            ui->tableView_2->setModel(pr.alerteqt());
-            ui->tableView_3->setModel(pr.alertedate());
-        }
-        else {QMessageBox::information(nullptr,QObject::tr("IMPOSSIBLE"),QObject::tr("click cancel to exit!"),QMessageBox::Cancel);}
-    }
-}
-
-void MainWindow::on_comboBox_9_activated(const QString &arg1)
-{
-    type=arg1;
-}
-
-void MainWindow::on_dateEdit_3_userDateChanged(const QDate &date)
-{
-    date1=date;
-}
-void MainWindow::on_spinBox_5_valueChanged(const QString &arg1)
-{
-    qt=arg1.toInt();
-}
-
-void MainWindow::on_spinBox_6_valueChanged(const QString &arg1)
-{
-    solde=arg1.toInt();
+    ui->tabAbonne->setModel(tmpabonne.triea(2));
 }
 
 
-
-void MainWindow::on_refedit_9_textChanged(const QString &arg1)
+void MainWindow::on_pushButton_retour_clicked()
 {
-    QString code = QString::number(arg1.toInt());
-       QSqlQuery query;
-       query.prepare("select * from produitray where refproduit='"+code+"'");
-       query.exec();
-       while(query.next())
-       {
-           ui->refedit_10->setText(query.value(1).toString());
-           //ui->comboBox->setCurrentText(query.value(2));
-           ui->refrayedit_3->setText(query.value(3).toString());
-          // ui->quantite_m->setText(query.value(5).toString());
-       }
+
+    QString strStream;
+                QTextStream out(&strStream);
+
+                const int rowCount = ui->tabAbonne->model()->rowCount();
+                const int columnCount = ui->tabAbonne->model()->columnCount();
+                QString TT = QDate::currentDate().toString("yyyy/MM/dd");
+                out <<"<html>\n"
+                      "<head>\n"
+                       "<meta Content=\"Text/html; charset=Windows-1251\">\n"
+                    << "<title>ERP - COMmANDE LIST<title>\n "
+                    << "</head>\n"
+                    "<body bgcolor=#ffffff link=#5000A0>\n"
+                    "<h1 style=\"text-align: center;\"><strong> *****LISTE DES Factures ***** "+TT+"</strong></h1>"
+                    "<table style=\"text-align: center; font-size: 20px;\" border=1>\n "
+                      "</br> </br>";
+                // headers
+                out << "<thead><tr bgcolor=#d6e5ff>";
+                for (int column = 0; column < columnCount; column++)
+                    if (!ui->tabAbonne->isColumnHidden(column))
+                        out << QString("<th>%1</th>").arg(ui->tabAbonne->model()->headerData(column, Qt::Horizontal).toString());
+                out << "</tr></thead>\n";
+
+                // data table
+                for (int row = 0; row < rowCount; row++) {
+                    out << "<tr>";
+                    for (int column = 0; column < columnCount; column++) {
+                        if (!ui->tabAbonne->isColumnHidden(column)) {
+                            QString data =ui->tabAbonne->model()->data(ui->tabAbonne->model()->index(row, column)).toString().simplified();
+                            out << QString("<td bkcolor=0>%1</td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+                        }
+                    }
+                    out << "</tr>\n";
+                }
+                out <<  "</table>\n"
+                    "</body>\n"
+                    "</html>\n";
+
+                QTextDocument *document = new QTextDocument();
+                document->setHtml(strStream);
+
+                QPrinter printer;
+
+                QPrintDialog *baba = new QPrintDialog(&printer, NULL);
+                if (baba->exec() == QDialog::Accepted) {
+                    document->print(&printer);
+                }
+
+                delete document;
+
 }
 
-void MainWindow::on_pushButton_27_clicked()
+
+
+void MainWindow::on_pushButton_rr_clicked()
 {
-    int ref = ui->lineEdit_23->text().toInt();
-    bool test= pr.supprimer(ref);
-    if (test)
-    {
-        QMessageBox::information(nullptr, QObject::tr("suppression"),
-                          QObject::tr("Produit supprimé.\n"
-                                      "Click Cancel to exit."), QMessageBox::Cancel);
-        ui->tableView->setModel(pr.afficher());
-        ui->tableView_2->setModel(pr.alerteqt());
-        ui->tableView_3->setModel(pr.alertedate());
-    }
-    else QMessageBox::information(nullptr, QObject::tr("suppression"),
-                                  QObject::tr("erreur."), QMessageBox::Cancel);
+    ui->tabAbonne->setModel(tmpabonne.afficher());
+
+    //ui->tabAbonne->setModel(tmpplace.afficherp());
 }
 
-
-void MainWindow::sendMail()
+void MainWindow::on_pushButton_r_clicked()
 {
-    Smtp* smtp = new Smtp(ui->uname->text(), ui->paswd->text(), ui->server->text(), ui->port->text().toUShort());
-    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
-
-
-    smtp->sendMail(ui->uname->text(), ui->rcpt->text() , ui->subject->text(),ui->msg->toPlainText());
+    ui->tab_place->setModel(tmpplace.afficherp());
 }
 
-void MainWindow::mailSent(QString status)
+void MainWindow::on_pushButton_9_clicked()
 {
-    if(status == "Message sent")
-        QMessageBox::warning( nullptr, tr( "Qt Simple SMTP client" ), tr( "Message sent!\n\n" ) );
-}
 
-void MainWindow::on_comboBox_3_activated(const QString &arg1)
-{
-    pr.set_ref(arg1.toInt());
 }
